@@ -1,11 +1,14 @@
 const express = require('express')
 const app = express()
-const port = 3000;
+const port = 3009;
 
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const PdfPrinter = require('pdfmake/src/printer');
 const fs = require('fs');
+
+
+// https://lakelandcargo.com:3001/pdf/test.pdf
 
 //Middleware
 app.use(function (req, res, next) {
@@ -34,15 +37,22 @@ app.use(
 
 app.use('/pdf', express.static(__dirname + '/pdf/'));
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
+
+    const data = req.body;
+
+    
 
     let pdfCreation = false;
     const docDefinition = {
         pageSize: 'A4',
         pageMargins: [40, 60, 40, 60],
         content: [
-            'Sally Bot',
-            'Here we go revilo ... !'
+            'Sally Bot : WHATSAPP INVOICE',
+            'INVOICE NUMBER: '+ data.invoiceNo,
+            'Description: '+data.description,
+            'TOTAL:  '+data.total,
+            'PAY VIA: '+data.accountNo
         ]
     };
 
@@ -57,13 +67,17 @@ app.get('/', (req, res) => {
 
     const printer = new PdfPrinter(fontDescriptors);
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    let file_name = 'pdf/facture.pdf';
+    let file_name = 'pdf/facture'+ Date.now().toString() + '.pdf';
 
     pdfDoc.pipe(fs.createWriteStream(file_name))
     .on('finish', function () {
+
+        const response = {
+            file : file_name
+        };
         
         
-        res.send('Hello World!')
+        res.send(response)
         
         // return client.messages
         //             .create({
