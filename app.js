@@ -10,6 +10,8 @@ const fs = require('fs');
 
 // https://lakelandcargo.com:3001/pdf/test.pdf
 
+// https://lakelandcargo.com:3001/pdf/facture1563874490325.pdf
+
 //Middleware
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -44,17 +46,30 @@ app.post('/', (req, res) => {
     
 
     let pdfCreation = false;
-    const docDefinition = {
-        pageSize: 'A4',
-        pageMargins: [40, 60, 40, 60],
-        content: [
-            'Sally Bot : WHATSAPP INVOICE',
-            'INVOICE NUMBER: '+ data.invoiceNo,
-            'Description: '+data.description,
-            'TOTAL:  '+data.total,
-            'PAY VIA: '+data.accountNo
-        ]
-    };
+    const docDefinition  = {};
+
+    if (req.body.hasOwnProperty('statement')) {
+
+        docDefinition = {
+            pageSize: 'A4',
+            pageMargins: [40, 60, 40, 60],
+            content: req.body.content
+        };
+
+    } else {
+        docDefinition = {
+            pageSize: 'A4',
+            pageMargins: [40, 60, 40, 60],
+            content: [
+                'Sally Bot : WHATSAPP INVOICE',
+                'INVOICE NUMBER: '+ data.invoiceNo,
+                'Description: '+data.description,
+                'TOTAL:  '+data.total,
+                'PAY VIA: '+data.accountNo
+            ]
+        };
+    }
+   
 
     const fontDescriptors = {
         Roboto: {
