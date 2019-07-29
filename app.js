@@ -46,7 +46,7 @@ app.post('/', (req, res) => {
     
 
     let pdfCreation = false;
-    const docDefinition  = {};
+    let docDefinition  = {};
 
     if (req.body.hasOwnProperty('statement')) {
 
