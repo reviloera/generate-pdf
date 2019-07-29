@@ -43,10 +43,10 @@ app.post('/', (req, res) => {
 
     const data = req.body;
 
-    
+
 
     let pdfCreation = false;
-    let docDefinition  = {};
+    let docDefinition = {};
 
     if (req.body.hasOwnProperty('statement')) {
 
@@ -56,20 +56,26 @@ app.post('/', (req, res) => {
             content: req.body.content
         };
 
+    } else if (req.body.hasOwnProperty('school')) {
+        docDefinition = {
+            pageSize: 'A4',
+            pageMargins: [40, 60, 40, 60],
+            content: req.body.content
+        };
     } else {
         docDefinition = {
             pageSize: 'A4',
             pageMargins: [40, 60, 40, 60],
             content: [
                 'Sally Bot : WHATSAPP INVOICE',
-                'INVOICE NUMBER: '+ data.invoiceNo,
-                'Description: '+data.description,
-                'TOTAL:  '+data.total,
-                'PAY VIA: '+data.accountNo
+                'INVOICE NUMBER: ' + data.invoiceNo,
+                'Description: ' + data.description,
+                'TOTAL:  ' + data.total,
+                'PAY VIA: ' + data.accountNo
             ]
         };
     }
-   
+
 
     const fontDescriptors = {
         Roboto: {
@@ -82,41 +88,41 @@ app.post('/', (req, res) => {
 
     const printer = new PdfPrinter(fontDescriptors);
     const pdfDoc = printer.createPdfKitDocument(docDefinition);
-    let file_name = 'pdf/facture'+ Date.now().toString() + '.pdf';
+    let file_name = 'pdf/facture' + Date.now().toString() + '.pdf';
 
     pdfDoc.pipe(fs.createWriteStream(file_name))
-    .on('finish', function () {
+        .on('finish', function () {
 
-        const response = {
-            file : file_name
-        };
-        
-        
-        res.send(response)
-        
-        // return client.messages
-        //             .create({
-        //                 from: 'whatsapp:+14155238886',
-        //                 to: `${data.From}`,
-        //                 //body: '',
-        //                 body: 'Wow! looks like its your first time on Stanbic LytInvoice! send *start* to get started',
-        //                 mediaUrl: url
-        //             })
-        //             .then(message => {
-        //                 console.log(message.sid, data.From);
-        //             })
-        //             .catch(err2 => {
-        //                 console.error(err2);
-        //             });
-    })
-    .on('error', function (err3) {
-        console.log('Error during the wirtestream operation in the new file');
+            const response = {
+                file: file_name
+            };
 
-    });
 
-pdfDoc.end();
+            res.send(response)
 
-    
+            // return client.messages
+            //             .create({
+            //                 from: 'whatsapp:+14155238886',
+            //                 to: `${data.From}`,
+            //                 //body: '',
+            //                 body: 'Wow! looks like its your first time on Stanbic LytInvoice! send *start* to get started',
+            //                 mediaUrl: url
+            //             })
+            //             .then(message => {
+            //                 console.log(message.sid, data.From);
+            //             })
+            //             .catch(err2 => {
+            //                 console.error(err2);
+            //             });
+        })
+        .on('error', function (err3) {
+            console.log('Error during the wirtestream operation in the new file');
+
+        });
+
+    pdfDoc.end();
+
+
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
