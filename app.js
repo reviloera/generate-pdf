@@ -71,7 +71,8 @@ app.post('/', (req, res) => {
                 'INVOICE NUMBER: ' + data.invoiceNo,
                 'Description: ' + data.description,
                 'TOTAL:  ' + data.total,
-                'PAY VIA: ' + data.accountNo
+                'CUSTOMER ACCOUNT: ' + data.accountNo,
+                'MPESA TILL NUMBER: 297223',
             ]
         };
     }
